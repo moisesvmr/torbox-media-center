@@ -91,7 +91,7 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
 
         if data.get("type") == "anime" or data.get("type") == "series":
             title = data.get("title")
-            series_season_episode = constructSeriesTitle(data.get("season", None), data.get("episode", None))
+            series_season_episode = constructSeriesTitle(title_data.get("season", None), title_data.get("episode", None))
             file_name = f"{title} {series_season_episode}{extension}"
             base_metadata["meta_title"] = title
             base_metadata["metadata_filename"] = file_name
