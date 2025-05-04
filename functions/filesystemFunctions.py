@@ -1,5 +1,6 @@
 import os
 from library.filesystem import MOUNT_PATH
+import shutil
 
 def initializeFolders():
     """
@@ -12,4 +13,6 @@ def initializeFolders():
     ]
 
     for folder in folders:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
         os.makedirs(folder, exist_ok=True)
