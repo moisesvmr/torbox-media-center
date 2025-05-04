@@ -54,8 +54,6 @@ def getUserDownloads(type: DownloadType):
             metadata, _, _ = searchMetadata(title_data.get("title"), title_data, file.get("short_name"))
             data.update(metadata)
             files.append(data)
-            print(data)
-    
             
     return files, True, f"{type.value.capitalize()} fetched successfully."
 
@@ -70,6 +68,7 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
         "metadata_season": None,
         "metadata_episode": None,
         "metadata_filename": file_name,
+        "metadata_rootfoldername": title_data.get("title", None),
     }
     extension = os.path.splitext(file_name)[-1]
     response = search_api_http_client.get(f"/meta/search/{query}")
