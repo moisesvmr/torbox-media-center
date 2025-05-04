@@ -48,8 +48,8 @@ def getUserDownloads(type: DownloadType):
                 "download_link": f"https://api.torbox.app/v1/api/{type.value}/requestdl?token={TORBOX_API_KEY}&{IDType[type.value].value}={item.get('id')}&file_id={file.get('id')}&redirect=true",               
             }
             title_data = PTN.parse(file.get("short_name"))
-            metadata = searchMetadata(title_data.get("title"))
-            data.update(metadata[0])
+            metadata, _, _ = searchMetadata(title_data.get("title"))
+            data.update(metadata)
             files.append(data)
             
     return files, True, f"{type.value.capitalize()} fetched successfully."
