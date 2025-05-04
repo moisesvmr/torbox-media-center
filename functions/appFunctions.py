@@ -1,6 +1,7 @@
 from functions.torboxFunctions import getUserDownloads, DownloadType
 from library.filesystem import MOUNT_METHOD
 from library.torbox import TORBOX_API_KEY
+from functions.filesystemFunctions import initializeFolders
 
 def getAllUserDownloads():
     all_downloads = []
@@ -15,4 +16,7 @@ def bootUp():
     print("Booting up...")
     print("Mount method:", MOUNT_METHOD)
     print("TorBox API Key:", TORBOX_API_KEY)
+
+    initializeFolders()
+
     return True
