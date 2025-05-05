@@ -178,3 +178,4 @@ torbox
 movies
 series
 test-*
+*.json

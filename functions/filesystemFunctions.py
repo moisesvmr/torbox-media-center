@@ -1,12 +1,12 @@
 import os
 from library.filesystem import MOUNT_PATH
-import shutil
 import stat
 import errno
 from functions.torboxFunctions import getDownloadLink, downloadFile
 import time
 import sys
 import logging
+from functions.appFunctions import getAllUserDownloads
 
 # Pull in some spaghetti to make this stuff work without fuse-py being installed
 try:
@@ -19,21 +19,6 @@ if not hasattr(fuse, '__version__'):
     raise RuntimeError("your fuse-python doesn't know of fuse.__version__, probably it's too old.")
 
 fuse.fuse_python_api = (0, 2)
-
-def initializeFolders():
-    """
-    Initialize the necessary folders for the application.
-    """
-    folders = [
-        MOUNT_PATH,
-        os.path.join(MOUNT_PATH, "movies"),
-        os.path.join(MOUNT_PATH, "series"),
-    ]
-
-    for folder in folders:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-        os.makedirs(folder, exist_ok=True)
 
 def generateFolderPath(data: dict):
     """
@@ -93,6 +78,7 @@ class VirtualFileSystem:
             '/series': set()
         }
         
+        
         for f in self.files:
             media_type = f.get('metadata_mediatype')
             root_folder = f.get('metadata_rootfoldername')
@@ -120,7 +106,7 @@ class VirtualFileSystem:
         
         # consistent ordering
         for key in structure:
-            structure[key] = sorted(list(structure[key]))
+            structure[key] = sorted([item for item in structure[key] if item is not None])
             
         return structure
 
@@ -163,10 +149,10 @@ class FuseStat(fuse.Stat):
         self.st_ctime = 0
 
 class TorBoxMediaCenterFuse(Fuse):
-    def __init__(self, files, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(TorBoxMediaCenterFuse, self).__init__(*args, **kwargs)
-        self.files = files
-        self.vfs = VirtualFileSystem(files)
+        self.files = self.getFiles()
+        self.vfs = VirtualFileSystem(self.files)
         self.file_handles = {}
         self.next_handle = 1
         self.cached_links = {}
@@ -174,6 +160,10 @@ class TorBoxMediaCenterFuse(Fuse):
         self.cache = {}
         self.block_size = 1024 * 1024 * 16
         self.max_blocks = 16
+
+    def getFiles(self):
+        files = getAllUserDownloads()
+        return files
         
     def getattr(self, path):
         st = FuseStat()
@@ -263,9 +253,8 @@ class TorBoxMediaCenterFuse(Fuse):
             del self.file_handles[fh]
         return 0
     
-def runFuse(files: dict):
+def runFuse():
     server = TorBoxMediaCenterFuse(
-        files=files,
         version="%prog " + fuse.__version__,
         usage="%prog [options] mountpoint",
         dash_s_do="setsingle",

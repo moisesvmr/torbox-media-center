@@ -4,6 +4,7 @@ from enum import Enum
 import PTN
 from library.torbox import TORBOX_API_KEY
 from functions.mediaFunctions import constructSeriesTitle
+from functions.databaseFunctions import insertData
 import os
 import logging
 
@@ -16,6 +17,11 @@ class IDType(Enum):
     torrents = "torrent_id"
     usenet = "usenet_id"
     webdl = "web_id"
+
+ACCEPTABLE_MIME_TYPES = [
+    "video/x-matroska",
+    "video/mp4",
+]
 
 def getUserDownloads(type: DownloadType):
     params = {
@@ -37,7 +43,8 @@ def getUserDownloads(type: DownloadType):
         if not item.get("cached", False):
             continue
         for file in item.get("files", []):
-            if not file.get("mimetype").startswith("video/"):
+            if not file.get("mimetype").startswith("video/") or file.get("mimetype") not in ACCEPTABLE_MIME_TYPES:
+                logging.debug(f"Skipping file {file.get('short_name')} with mimetype {file.get('mimetype')}")
                 continue
             data = {
                 "item_id": item.get("id"),
@@ -57,6 +64,7 @@ def getUserDownloads(type: DownloadType):
             data.update(metadata)
             files.append(data)
             logging.debug(data)
+            insertData(data, type.value)
             
     return files, True, f"{type.value.capitalize()} fetched successfully."
 

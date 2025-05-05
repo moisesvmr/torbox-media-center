@@ -1,4 +1,4 @@
-from tinydb import TinyDB, Query
+from tinydb import TinyDB
 
 def getDatabase(name: str = "db"):
     """

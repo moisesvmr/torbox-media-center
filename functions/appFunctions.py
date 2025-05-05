@@ -1,17 +1,58 @@
 from functions.torboxFunctions import getUserDownloads, DownloadType
 from library.filesystem import MOUNT_METHOD, MOUNT_PATH
 from library.torbox import TORBOX_API_KEY
-from functions.filesystemFunctions import initializeFolders
+from functions.databaseFunctions import getAllData, clearDatabase
 import logging
+import os
+import shutil
 
-def getAllUserDownloads():
+def initializeFolders():
+    """
+    Initialize the necessary folders for the application.
+    """
+    folders = [
+        MOUNT_PATH,
+        os.path.join(MOUNT_PATH, "movies"),
+        os.path.join(MOUNT_PATH, "series"),
+    ]
+
+    for folder in folders:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)
+        os.makedirs(folder, exist_ok=True)
+
+def getAllUserDownloadsFresh():
     all_downloads = []
+    logging.info("Fetching all user downloads...")
     for download_type in DownloadType:
+        logging.debug(f"Clearing database for {download_type.value}...")
+        success, detail = clearDatabase(download_type.value)
+        if not success:
+            logging.error(f"Error clearing {download_type.value} database: {detail}")
+            continue
+        logging.debug(f"Fetching {download_type.value} downloads...")
         downloads, success, detail = getUserDownloads(download_type)
         if not success:
             logging.error(f"Error fetching {download_type.value}: {detail}")
             continue
+        if not downloads:
+            logging.info(f"No {download_type.value} downloads found.")
+            continue
         all_downloads.extend(downloads)
+        logging.debug(f"Fetched {len(downloads)} {download_type.value} downloads.")
+    return all_downloads
+
+def getAllUserDownloads():
+    all_downloads = []
+    for download_type in DownloadType:
+        logging.debug(f"Fetching {download_type.value} downloads...")
+        downloads, success, detail = getAllData(download_type.value)
+        if not success:
+            logging.error(f"Error fetching {download_type.value}: {detail}")
+            continue
+        all_downloads.extend(downloads)
+        logging.debug(f"Fetched {len(downloads)} {download_type.value} downloads.")
+    return all_downloads
 
 def bootUp():
     logging.debug("Booting up...")
