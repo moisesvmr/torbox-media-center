@@ -1,4 +1,5 @@
-from library.http import api_http_client, search_api_http_client
+from library.http import api_http_client, search_api_http_client, general_http_client
+import httpx
 from enum import Enum
 import PTN
 from library.torbox import TORBOX_API_KEY
@@ -114,3 +115,22 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
     except IndexError:
         return base_metadata, False, "No metadata found."
 
+def getDownloadLink(url: str):
+    response = general_http_client.get(url)
+    if response.status_code == httpx.codes.TEMPORARY_REDIRECT or response.status_code == httpx.codes.PERMANENT_REDIRECT or response.status_code == httpx.codes.FOUND:
+        return response.headers.get('Location')
+    return url
+
+def downloadFile(url: str, size: int, offset: int = 0):
+    headers = {
+        "Range": f"bytes={offset}-{offset + size - 1}",
+        **general_http_client.headers,
+    }
+    response = general_http_client.get(url, headers=headers)
+    if response.status_code == httpx.codes.OK:
+        return response.content
+    elif response.status_code == httpx.codes.PARTIAL_CONTENT:
+        return response.content
+    else:
+        raise Exception(f"Error downloading file: {response.status_code}")
+    

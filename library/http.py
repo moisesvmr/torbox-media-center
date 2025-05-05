@@ -23,3 +23,12 @@ search_api_http_client = httpx.Client(
     timeout=httpx.Timeout(60),
     follow_redirects=True,
 )
+
+general_http_client = httpx.Client(
+    headers={
+        "Authorization": f"Bearer {TORBOX_API_KEY}",
+        "User-Agent": "TorBox-Media-Center/1.0 TorBox/1.0",
+    },
+    timeout=httpx.Timeout(60),
+    follow_redirects=False,
+)

@@ -5,10 +5,10 @@ from enum import Enum
 load_dotenv()
 
 class MountMethods(Enum):
-    strmfiles = "strm"
-    symlink = "symlink"
+    strm = "strm"
+    fuse = "fuse"
 
-MOUNT_METHOD = os.getenv("MOUNT_METHOD", MountMethods.strmfiles.value)
+MOUNT_METHOD = os.getenv("MOUNT_METHOD", MountMethods.strm.value)
 assert MOUNT_METHOD in [method.value for method in MountMethods], "MOUNT_METHOD is not set correctly in .env file"
 
 MOUNT_PATH = os.getenv("MOUNT_PATH", "./torbox")

@@ -1,5 +1,5 @@
 from functions.torboxFunctions import getUserDownloads, DownloadType
-from library.filesystem import MOUNT_METHOD
+from library.filesystem import MOUNT_METHOD, MOUNT_PATH
 from library.torbox import TORBOX_API_KEY
 from functions.filesystemFunctions import initializeFolders
 
@@ -20,3 +20,9 @@ def bootUp():
     initializeFolders()
 
     return True
+
+def getMountMethod():
+    return MOUNT_METHOD
+
+def getMountPath():
+    return MOUNT_PATH
