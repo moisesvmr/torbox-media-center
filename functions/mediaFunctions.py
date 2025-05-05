@@ -18,7 +18,7 @@ def constructSeriesTitle(season = None, episode = None, folder: bool = False):
         title_episode = f"E{episode:02}"
 
     if title_season and title_episode:
-        return f"{title_season} {title_episode}"
+        return f"{title_season}{title_episode}"
     elif title_season:
         return title_season
     elif title_episode:

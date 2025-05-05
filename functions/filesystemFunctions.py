@@ -1,6 +1,17 @@
 import os
-from library.filesystem import MOUNT_PATH
+# from library.filesystem import MOUNT_PATH
 import shutil
+import fuse
+from fuse import Fuse
+import stat
+import errno
+
+
+MOUNT_PATH = "./torbox"
+if not hasattr(fuse, '__version__'):
+    raise RuntimeError("your fuse-python doesn't know of fuse.__version__, probably it's too old.")
+
+fuse.fuse_python_api = (0, 2)
 
 def initializeFolders():
     """

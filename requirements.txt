@@ -3,3 +3,4 @@ tinydb
 httpx
 python-dotenv
 parse-torrent-title
+fuse-python
