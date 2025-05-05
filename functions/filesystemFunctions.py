@@ -6,6 +6,7 @@ import errno
 from functions.torboxFunctions import getDownloadLink, downloadFile
 import time
 import sys
+import logging
 
 # Pull in some spaghetti to make this stuff work without fuse-py being installed
 try:
@@ -78,10 +79,7 @@ def generateStremFile(file_path: str, url: str, type: str, file_name: str):
     os.makedirs(full_path, exist_ok=True)
     with open(f"{full_path}/{file_name}.strm", "w") as file:
         file.write(url)
-
-
 # Fuse
-
 class VirtualFileSystem:
     def __init__(self, files_list):
         self.files = files_list
@@ -217,9 +215,9 @@ class TorBoxMediaCenterFuse(Fuse):
             return -errno.EACCES
     
     def read(self, path, size, offset):
-        print(f"READ Path: {path}")
-        print(f"READ Size: {size}")
-        print(f"READ Offset: {offset}")
+        logging.debug(f"READ Path: {path}")
+        logging.debug(f"READ Size: {size}")
+        logging.debug(f"READ Offset: {offset}")
         file = self.vfs.get_file(path)
         
         if path not in self.cached_links:
@@ -238,7 +236,7 @@ class TorBoxMediaCenterFuse(Fuse):
             
             # check for block
             if (path, block_index) not in self.cache:
-                print(f"Cache miss for block {block_index}, fetching...")
+                logging.debug(f"Cache miss for block {block_index}, fetching...")
                 # get block
                 block_data = downloadFile(download_link, current_block_size, block_offset)
                 if not block_data:
@@ -279,24 +277,28 @@ def runFuse(files: dict):
         default=MOUNT_PATH,
         help="Mount point for the filesystem",
     )
+    server.fuse_args.add(
+        "nonempty"
+    )
+    server.fuse_args.add(
+        "allow_other"
+    )
+    server.fuse_args.add(
+        "-f"
+    )
     server.parse(values=server, errex=1)
     try:
-        server.fuse_args.add(
-            "nonempty"
-        )
-        server.fuse_args.add(
-            "allow_other"
-        )
-        server.fuse_args.add(
-            "-f"
-        )
-        if server.fuse_args.mount_expected():
-            os.chdir(MOUNT_PATH)
+        server.fuse_args.mountpoint = MOUNT_PATH
     except OSError as e:
-        print(f"Error changing directory: {e}")
+        logging.error(f"Error changing directory: {e}")
         sys.exit(1)
     server.main()
-    print("Unmounting...")
 
-
+def unmountFuse():
+    try:
+        os.system("fusermount -u " + MOUNT_PATH)
+    except OSError as e:
+        logging.error(f"Error unmounting: {e}")
+        sys.exit(1)
+    logging.info("Unmounted successfully.")
 

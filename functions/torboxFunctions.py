@@ -5,6 +5,7 @@ import PTN
 from library.torbox import TORBOX_API_KEY
 from functions.mediaFunctions import constructSeriesTitle
 import os
+import logging
 
 class DownloadType(Enum):
     torrent = "torrents"
@@ -55,6 +56,7 @@ def getUserDownloads(type: DownloadType):
             metadata, _, _ = searchMetadata(title_data.get("title"), title_data, file.get("short_name"))
             data.update(metadata)
             files.append(data)
+            logging.debug(data)
             
     return files, True, f"{type.value.capitalize()} fetched successfully."
 
@@ -132,5 +134,6 @@ def downloadFile(url: str, size: int, offset: int = 0):
     elif response.status_code == httpx.codes.PARTIAL_CONTENT:
         return response.content
     else:
+        logging.error(f"Error downloading file: {response.status_code}")
         raise Exception(f"Error downloading file: {response.status_code}")
     
