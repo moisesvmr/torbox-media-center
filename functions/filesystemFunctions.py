@@ -179,7 +179,7 @@ class TorBoxMediaCenterFuse(Fuse):
                 self.files = files
                 self.vfs = VirtualFileSystem(self.files)
                 logging.debug(f"Updated {len(self.files)} files in VFS")
-            time.sleep(5)
+            time.sleep(300)
         
     def getattr(self, path):
         st = FuseStat()
@@ -315,5 +315,4 @@ def runStrm():
             continue
         generateStremFile(file_path, download.get("download_link"), download.get("metadata_mediatype"), download.get("metadata_filename"))
 
-
-    
+    logging.debug(f"Updated {len(all_downloads)} strm files.")
