@@ -7,6 +7,7 @@ import time
 import sys
 import logging
 from functions.appFunctions import getAllUserDownloads
+import threading
 
 # Pull in some spaghetti to make this stuff work without fuse-py being installed
 try:
@@ -151,7 +152,10 @@ class FuseStat(fuse.Stat):
 class TorBoxMediaCenterFuse(Fuse):
     def __init__(self, *args, **kwargs):
         super(TorBoxMediaCenterFuse, self).__init__(*args, **kwargs)
-        self.files = self.getFiles()
+
+        threading.Thread(target=self.getFiles, daemon=True).start()
+
+        self.files = []
         self.vfs = VirtualFileSystem(self.files)
         self.file_handles = {}
         self.next_handle = 1
@@ -162,8 +166,13 @@ class TorBoxMediaCenterFuse(Fuse):
         self.max_blocks = 16
 
     def getFiles(self):
-        files = getAllUserDownloads()
-        return files
+        while True:
+            files = getAllUserDownloads()
+            if files:
+                self.files = files
+                self.vfs = VirtualFileSystem(self.files)
+                logging.debug(f"Updated {len(self.files)} files in VFS")
+            time.sleep(5)
         
     def getattr(self, path):
         st = FuseStat()
