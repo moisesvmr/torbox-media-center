@@ -60,6 +60,13 @@ def generateFolderPath(data: dict):
 def generateStremFile(file_path: str, url: str, type: str, file_name: str):
     if file_path is None:
         return
+    if type == "movie":
+        type = "movies"
+    elif type == "series":
+        type = "series"
+    elif type == "anime":
+        type = "series"
+
     full_path = os.path.join(MOUNT_PATH, type, file_path)
 
     os.makedirs(full_path, exist_ok=True)
@@ -300,3 +307,13 @@ def unmountFuse():
         sys.exit(1)
     logging.info("Unmounted successfully.")
 
+def runStrm():
+    all_downloads = getAllUserDownloads()
+    for download in all_downloads:
+        file_path = generateFolderPath(download)
+        if file_path is None:
+            continue
+        generateStremFile(file_path, download.get("download_link"), download.get("metadata_mediatype"), download.get("metadata_filename"))
+
+
+    
