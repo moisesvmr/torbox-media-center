@@ -81,3 +81,19 @@ docker run -it -d \
     -e MOUNT_PATH=/data \
     anonymoussystems/torbox-media-center:latest
 ```
+
+## Standard Docker Run Command Using The Very Latest Update (STRM)
+
+Below is a standard Docker run command for running the bleeding edge of this repository. This usually isn't a good idea, but can be used for testing the latest updates, or debugging issues. For the latest release updates, use the `latest` Docker image tag. To get the latest nightly/bleeding edge/source updates straight from the repository, use the `main` Docker image tag. You also may use a commit SHA hash to get the image of a specific commit. For example: `sha-bdd4339`. This works with both GitHub and Docker repository URLs.
+
+```bash
+docker run -it -d \
+    --name=torbox-media-center \
+    --restart=always \
+    --init \
+    -v /home/$(whoami)/torbox:/torbox \
+    -e TORBOX_API_KEY=<EDIT_THIS_KEY> \
+    -e MOUNT_METHOD=strm \
+    -e MOUNT_PATH=/torbox \
+    anonymoussystems/torbox-media-center:main
+```
