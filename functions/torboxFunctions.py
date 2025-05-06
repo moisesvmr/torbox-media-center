@@ -60,6 +60,10 @@ def getUserDownloads(type: DownloadType):
                 "extension": os.path.splitext(file.get("short_name"))[-1],              
             }
             title_data = PTN.parse(file.get("short_name"))
+
+            if item.get("name") == item.get("hash"):
+                item["name"] = title_data.get("title", file.get("short_name"))
+
             metadata, _, _ = searchMetadata(title_data.get("title", file.get("short_name")), title_data, file.get("short_name"), f"{item.get('name')} {file.get('short_name')}")
             data.update(metadata)
             files.append(data)
@@ -83,11 +87,13 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
     }
     extension = os.path.splitext(file_name)[-1]
     response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
+    print(full_title)
     if response.status_code != 200:
         logging.error(f"Error searching metadata: {response.status_code}")
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
     try:
         data = response.json().get("data", [])[0]
+
         title = cleanTitle(data.get("title"))
         base_metadata["metadata_title"] = title
         base_metadata["metadata_years"] = cleanYear(title_data.get("year", None) or data.get("releaseYears"))
@@ -95,8 +101,8 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
         if data.get("type") == "anime" or data.get("type") == "series":
             series_season_episode = constructSeriesTitle(season=title_data.get("season", None), episode=title_data.get("episode", None))
             file_name = f"{title} {series_season_episode}{extension}"
-            base_metadata["metadata_foldername"] = constructSeriesTitle(season=title_data.get("season"), folder=True)
-            base_metadata["metadata_season"] = title_data.get("season")
+            base_metadata["metadata_foldername"] = constructSeriesTitle(season=title_data.get("season", 1), folder=True)
+            base_metadata["metadata_season"] = title_data.get("season", 1)
             base_metadata["metadata_episode"] = title_data.get("episode")
         elif data.get("type") == "movie":
             file_name = f"{title} ({base_metadata['metadata_years']}){extension}"
