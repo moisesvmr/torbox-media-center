@@ -60,7 +60,7 @@ def getUserDownloads(type: DownloadType):
                 "extension": os.path.splitext(file.get("short_name"))[-1],              
             }
             title_data = PTN.parse(file.get("short_name"))
-            metadata, _, _ = searchMetadata(title_data.get("title"), title_data, file.get("short_name"))
+            metadata, _, _ = searchMetadata(title_data.get("title"), title_data, file.get("short_name"), f"{item.get('name')} {file.get('short_name')}")
             data.update(metadata)
             files.append(data)
             logging.debug(data)
@@ -68,7 +68,7 @@ def getUserDownloads(type: DownloadType):
             
     return files, True, f"{type.value.capitalize()} fetched successfully."
 
-def searchMetadata(query: str, title_data: dict, file_name: str):
+def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str):
     base_metadata = {
         "metadata_title": cleanTitle(query),
         "metadata_link": None,
@@ -82,7 +82,7 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
         "metadata_rootfoldername": title_data.get("title", None),
     }
     extension = os.path.splitext(file_name)[-1]
-    response = search_api_http_client.get(f"/meta/search/{query}")
+    response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
     if response.status_code != 200:
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
     try:
