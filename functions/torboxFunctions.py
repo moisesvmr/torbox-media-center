@@ -60,7 +60,7 @@ def getUserDownloads(type: DownloadType):
                 "extension": os.path.splitext(file.get("short_name"))[-1],              
             }
             title_data = PTN.parse(file.get("short_name"))
-            metadata, _, _ = searchMetadata(title_data.get("title"), title_data, file.get("short_name"), f"{item.get('name')} {file.get('short_name')}")
+            metadata, _, _ = searchMetadata(title_data.get("title", file.get("short_name")), title_data, file.get("short_name"), f"{item.get('name')} {file.get('short_name')}")
             data.update(metadata)
             files.append(data)
             logging.debug(data)
