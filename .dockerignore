@@ -1,0 +1,6 @@
+.github
+.env.example
+.gitignore
+CHANGELOG.md
+*.md
+*.yaml
