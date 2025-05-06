@@ -87,7 +87,6 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
     }
     extension = os.path.splitext(file_name)[-1]
     response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
-    print(full_title)
     if response.status_code != 200:
         logging.error(f"Error searching metadata: {response.status_code}")
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
