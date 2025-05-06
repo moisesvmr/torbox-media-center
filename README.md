@@ -81,3 +81,65 @@ To run this project you will need to add the following environment variables to 
 `MOUNT_METHOD` The mounting method you want to use. Must be either `strm` or `fuse`. Read here for choosing a method. The default is `strm` and is optional.
 
 `MOUNT_PATH` The mounting path where all of your files will be accessible. If inside of Docker, this path needs to be accessible to other applications. If running locally without Docker, this path must be owned.
+
+## Running on Docker (recommended)
+1. Make sure you have Docker installed on your server/computer. You can find instructions on how to install Docker [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04) *(you can change your distribution in the guide)*.
+2. Edit the below Docker command with your proper environment variables and options. More Docker run commands can be found [here](https://github.com/TorBox-App/torbox-media-center/docker.md).
+```bash
+docker run -it -d \
+    --name=torbox-media-center \
+    --restart=always \
+    --init \
+    -v /home/$(whoami)/torbox:/torbox \
+    -e TORBOX_API_KEY=<EDIT_THIS_KEY> \
+    -e MOUNT_METHOD=strm \
+    -e MOUNT_PATH=/torbox \
+    anonymoussystems/torbox-media-center:main
+```
+or if you prefer Docker compose, this is the yaml, also found [here](https://github.com/TorBox-App/torbox-media-center/docker-compose.yaml).
+```yaml
+name: torbox-media-center
+services:
+    torbox-media-center:
+        container_name: torbox-media-center
+        stdin_open: true
+        tty: true
+        restart: always
+        volumes:
+            - /home/$(whoami)/torbox:/torbox
+        environment:
+            - TORBOX_API_KEY=<EDIT_THIS_KEY>
+            - MOUNT_METHOD=strm
+            - MOUNT_PATH=/torbox
+        image: anonymoussystems/torbox-media-center:main
+```
+*You may also use the Github repository container found here: ghcr.io/torbox-app/torbox-media-center:main*
+3. Wait for the files to be mounted to your local system.
+
+## Running Locally (no Docker)
+1. Make sure you have Python installed. Anything from v3.6 should be okay.
+2. Download or git clone this repository.
+```bash
+git clone https://github.com/TorBox-App/torbox-media-center.git
+```
+or download the repository zip file [here](https://github.com/TorBox-App/torbox-media-center/archive/refs/heads/main.zip) and extract the files.
+
+3. Create a `.env` file or rename `.env.example` to `.env`.
+4. Edit or add in your environment variables to the `.env` file.
+5. Install the requirements.
+```bash
+pip3 install -r requirements.txt
+```
+6. Run the `main.py` script.
+```bash
+python3 main.py
+```
+7. Wait for the files to be mounted to your local machine.
+
+## Support
+For support, email [contact@torbox.app](mailto:contact@torbox.app) or join our Discord server [here](https://join-discord.torbox.app). *We will not give sources or help with piracy in any way. This is for technical support only.*
+
+## Contributing
+Contributions are always welcome!
+
+Please make sure to follow [Conventional Commits](https://conventionalcommits.org/) when creating commit messages. We will authorize most pull requests, so don't hesitate to help out!
