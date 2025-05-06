@@ -3,7 +3,7 @@ import httpx
 from enum import Enum
 import PTN
 from library.torbox import TORBOX_API_KEY
-from functions.mediaFunctions import constructSeriesTitle, cleanTitle
+from functions.mediaFunctions import constructSeriesTitle, cleanTitle, cleanYear
 from functions.databaseFunctions import insertData
 import os
 import logging
@@ -84,11 +84,13 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
     extension = os.path.splitext(file_name)[-1]
     response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
     if response.status_code != 200:
+        logging.error(f"Error searching metadata: {response.status_code}")
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
     try:
         data = response.json().get("data", [])[0]
         title = cleanTitle(data.get("title"))
         base_metadata["metadata_title"] = title
+        base_metadata["metadata_years"] = cleanYear(title_data.get("year", None) or data.get("releaseYears"))
 
         if data.get("type") == "anime" or data.get("type") == "series":
             series_season_episode = constructSeriesTitle(season=title_data.get("season", None), episode=title_data.get("episode", None))
@@ -97,7 +99,7 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
             base_metadata["metadata_season"] = title_data.get("season")
             base_metadata["metadata_episode"] = title_data.get("episode")
         elif data.get("type") == "movie":
-            file_name = f"{title} ({data.get('releaseYears')}){extension}"
+            file_name = f"{title} ({base_metadata['metadata_years']}){extension}"
         else:
             return base_metadata, False, "No metadata found."
             
@@ -106,7 +108,6 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
         base_metadata["metadata_link"] = data.get("link")
         base_metadata["metadata_image"] = data.get("image")
         base_metadata["metadata_backdrop"] = data.get("backdrop")
-        base_metadata["metadata_years"] = title_data.get("year", None) or data.get("releaseYears")
         base_metadata["metadata_rootfoldername"] = f"{title} ({base_metadata['metadata_years']})"
 
         return base_metadata, True, "Metadata found."

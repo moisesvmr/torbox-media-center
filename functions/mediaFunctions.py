@@ -43,3 +43,11 @@ def cleanTitle(title: str):
     """
     title = re.sub(r"[\/\\\:\*\?\"\<\>\|]", "", title)
     return title
+
+def cleanYear(year: str | int):
+    """
+    Cleans the year listing which can be a string (2023-2024) or an int (2023).
+    """
+    if isinstance(year, str):
+        year = year.split("-")[0]
+    return int(year)
