@@ -8,6 +8,7 @@ import sys
 import logging
 from functions.appFunctions import getAllUserDownloads
 import threading
+import shutil
 
 # Pull in some spaghetti to make this stuff work without fuse-py being installed
 try:
@@ -316,3 +317,22 @@ def runStrm():
         generateStremFile(file_path, download.get("download_link"), download.get("metadata_mediatype"), download.get("metadata_filename"))
 
     logging.debug(f"Updated {len(all_downloads)} strm files.")
+
+def unmountStrm():
+    """
+    Deletes all strm files and any subfolders in the mount path for cleaning up.
+    """
+    folders = [
+        MOUNT_PATH,
+        os.path.join(MOUNT_PATH, "movies"),
+        os.path.join(MOUNT_PATH, "series"),
+    ]
+    for folder in folders:
+        if os.path.exists(folder):
+            logging.debug(f"Folder {folder} already exists. Deleting...")
+            for item in os.listdir(folder):
+                item_path = os.path.join(folder, item)
+                if os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+                else:
+                    os.remove(item_path)

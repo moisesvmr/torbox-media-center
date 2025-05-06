@@ -1,7 +1,7 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from functions.appFunctions import bootUp, getMountMethod, getAllUserDownloadsFresh
-from functions.filesystemFunctions import runFuse, unmountFuse, runStrm
+from functions.filesystemFunctions import runFuse, unmountFuse, runStrm, unmountStrm
 import logging
 
 
@@ -50,4 +50,6 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         if mount_method == "fuse":
             unmountFuse()
+        elif mount_method == "strm":
+            unmountStrm()
         pass
