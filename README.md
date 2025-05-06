@@ -104,7 +104,7 @@ docker run -it -d \
     -e TORBOX_API_KEY=<EDIT_THIS_KEY> \
     -e MOUNT_METHOD=strm \
     -e MOUNT_PATH=/torbox \
-    anonymoussystems/torbox-media-center:main
+    anonymoussystems/torbox-media-center:latest
 ```
 
 or if you prefer Docker compose, this is the yaml, also found [here](https://github.com/TorBox-App/torbox-media-center/blob/main/docker-compose.yaml).
@@ -123,7 +123,7 @@ services:
             - TORBOX_API_KEY=<EDIT_THIS_KEY>
             - MOUNT_METHOD=strm
             - MOUNT_PATH=/torbox
-        image: anonymoussystems/torbox-media-center:main
+        image: anonymoussystems/torbox-media-center:latest
 ```
 
 *You may also use the Github repository container found here: ghcr.io/torbox-app/torbox-media-center:main*
