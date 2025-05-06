@@ -70,9 +70,21 @@ def generateStremFile(file_path: str, url: str, type: str, file_name: str):
 
     full_path = os.path.join(MOUNT_PATH, type, file_path)
 
-    os.makedirs(full_path, exist_ok=True)
-    with open(f"{full_path}/{file_name}.strm", "w") as file:
-        file.write(url)
+    try:
+        os.makedirs(full_path, exist_ok=True)
+        with open(f"{full_path}/{file_name}.strm", "w") as file:
+            file.write(url)
+        logging.debug(f"Created strm file: {full_path}/{file_name}.strm")
+        return True
+    except OSError as e:
+        logging.error(f"Error creating strm file (likely bad or missing permissions): {e}")
+        return False
+    except FileNotFoundError as e:
+        logging.error(f"Error creating strm file (likely bad naming scheme of file): {e}")
+        return False
+    except Exception as e:
+        logging.error(f"Error creating strm file: {e}")
+        return False
 # Fuse
 class VirtualFileSystem:
     def __init__(self, files_list):
