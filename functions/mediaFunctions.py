@@ -1,4 +1,15 @@
+import re
+
 def constructSeriesTitle(season = None, episode = None, folder: bool = False):
+    """
+    Constructs a proper title for a series based on the season and episode.
+
+    :param season: The season number or a list of season numbers.
+    :param episode: The episode number or a list of episode numbers.
+    :param folder: If True, the title will be formatted for a folder name.
+    """
+
+
     title_season = None
     title_episode = None
 
@@ -25,3 +36,10 @@ def constructSeriesTitle(season = None, episode = None, folder: bool = False):
         return title_episode
     else:
         return None
+    
+def cleanTitle(title: str):
+    """
+    Removes invalid characters from the title.
+    """
+    title = re.sub(r"[\/\\\:\*\?\"\<\>\|]", "", title)
+    return title

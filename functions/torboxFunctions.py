@@ -3,7 +3,7 @@ import httpx
 from enum import Enum
 import PTN
 from library.torbox import TORBOX_API_KEY
-from functions.mediaFunctions import constructSeriesTitle
+from functions.mediaFunctions import constructSeriesTitle, cleanTitle
 from functions.databaseFunctions import insertData
 import os
 import logging
@@ -70,7 +70,7 @@ def getUserDownloads(type: DownloadType):
 
 def searchMetadata(query: str, title_data: dict, file_name: str):
     base_metadata = {
-        "metadata_title": query,
+        "metadata_title": cleanTitle(query),
         "metadata_link": None,
         "metadata_mediatype": "movie",
         "metadata_image": None,
@@ -87,42 +87,34 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
     try:
         data = response.json().get("data", [])[0]
-
-        if data.get("type") == "movie":
-            base_metadata["media_type"] = "movie"
-        elif data.get("type") == "anime":
-            base_metadata["media_type"] = "anime"
-            base_metadata["metadata_season"] = title_data.get("season")
-            base_metadata["metadata_episode"] = title_data.get("episode")
-        elif data.get("type") == "series":
-            base_metadata["media_type"] = "series"
-            base_metadata["metadata_season"] = title_data.get("season")
-            base_metadata["metadata_episode"] = title_data.get("episode")
+        title = cleanTitle(data.get("title"))
+        base_metadata["metadata_title"] = title
 
         if data.get("type") == "anime" or data.get("type") == "series":
-            title = data.get("title")
-            series_season_episode = constructSeriesTitle(title_data.get("season", None), title_data.get("episode", None))
+            series_season_episode = constructSeriesTitle(season=title_data.get("season", None), episode=title_data.get("episode", None))
             file_name = f"{title} {series_season_episode}{extension}"
-            base_metadata["metadata_title"] = title
-            base_metadata["metadata_filename"] = file_name
-            base_metadata["metadata_rootfoldername"] = f"{title} ({data.get('releaseYears')})"
-            base_metadata["metadata_foldername"] = constructSeriesTitle(title_data.get("season"), None, True)
+            base_metadata["metadata_foldername"] = constructSeriesTitle(season=title_data.get("season"), folder=True)
+            base_metadata["metadata_season"] = title_data.get("season")
+            base_metadata["metadata_episode"] = title_data.get("episode")
         elif data.get("type") == "movie":
-            title = data.get("title")
             file_name = f"{title} ({data.get('releaseYears')}){extension}"
-            base_metadata["metadata_title"] = title
-            base_metadata["metadata_filename"] = file_name
-            base_metadata["metadata_rootfoldername"] = f"{title} ({data.get('releaseYears')})"
-
-        base_metadata["metadata_link"] = data.get("link")
+        else:
+            return base_metadata, False, "No metadata found."
+            
+        base_metadata["metadata_filename"] = file_name
         base_metadata["metadata_mediatype"] = data.get("type")
+        base_metadata["metadata_link"] = data.get("link")
         base_metadata["metadata_image"] = data.get("image")
         base_metadata["metadata_backdrop"] = data.get("backdrop")
         base_metadata["metadata_years"] = title_data.get("year", None) or data.get("releaseYears")
+        base_metadata["metadata_rootfoldername"] = f"{title} ({base_metadata['metadata_years']})"
 
         return base_metadata, True, "Metadata found."
     except IndexError:
         return base_metadata, False, "No metadata found."
+    except Exception as e:
+        logging.error(f"Error searching metadata: {e}")
+        return base_metadata, False, f"Error searching metadata: {e}"
 
 def getDownloadLink(url: str):
     response = general_http_client.get(url)
