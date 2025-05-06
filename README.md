@@ -1,7 +1,7 @@
 ![Logo](https://raw.githubusercontent.com/TorBox-App/torbox-media-center/main/assets/header.png)
 
 ## About
-The TorBox Media Center allows you to easily mount your TorBox media in a no-frills way. This moutns your playable media files to your filesystem for use with Jellyfin, Emby, Plex, Infuse, VLC, or any other media player. With TorBox's custom built solution you can mount files as virtual files (which take up zero storage space), or as .strm files (which take up less than 1GB for libraries of any size).
+The TorBox Media Center allows you to easily mount your TorBox media in a no-frills way. This mounts your playable media files to your filesystem for use with Jellyfin, Emby, Plex, Infuse, VLC, or any other media player. With TorBox's custom built solution you can mount files as virtual files (which take up zero storage space), or as .strm files (which take up less than 1GB for libraries of any size).
 
 > [!IMPORTANT]
 > *TorBox does not allow piracy or condone it in any way. This is meant to be used with media you own and have the rights to.*

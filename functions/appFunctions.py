@@ -18,8 +18,17 @@ def initializeFolders():
 
     for folder in folders:
         if os.path.exists(folder):
-            shutil.rmtree(folder)
-        os.makedirs(folder, exist_ok=True)
+            logging.debug(f"Folder {folder} already exists. Deleting...")
+            for item in os.listdir(folder):
+                item_path = os.path.join(folder, item)
+                if os.path.isdir(item_path):
+                    shutil.rmtree(item_path)
+                else:
+                    os.remove(item_path)
+        else:
+            logging.debug(f"Creating folder {folder}...")
+            os.makedirs(folder, exist_ok=True)
+
 
 def getAllUserDownloadsFresh():
     all_downloads = []

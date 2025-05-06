@@ -1,0 +1,9 @@
+docker run -it -d \
+    --name=torbox-media-center \
+    --restart=always \
+    --init \
+    -v /home/$(whoami)/torbox:/torbox \
+    -e TORBOX_API_KEY=your_api_key \
+    -e MOUNT_METHOD=strm \
+    -e MOUNT_PATH=/torbox \
+    anonymoussystems/torbox-media-center:main
