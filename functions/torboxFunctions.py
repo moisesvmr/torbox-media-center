@@ -103,18 +103,17 @@ def searchMetadata(query: str, title_data: dict, file_name: str):
             title = data.get("title")
             series_season_episode = constructSeriesTitle(title_data.get("season", None), title_data.get("episode", None))
             file_name = f"{title} {series_season_episode}{extension}"
-            base_metadata["meta_title"] = title
+            base_metadata["metadata_title"] = title
             base_metadata["metadata_filename"] = file_name
             base_metadata["metadata_rootfoldername"] = f"{title} ({data.get('releaseYears')})"
             base_metadata["metadata_foldername"] = constructSeriesTitle(title_data.get("season"), None, True)
         elif data.get("type") == "movie":
             title = data.get("title")
             file_name = f"{title} ({data.get('releaseYears')}){extension}"
-            base_metadata["meta_title"] = title
+            base_metadata["metadata_title"] = title
             base_metadata["metadata_filename"] = file_name
             base_metadata["metadata_rootfoldername"] = f"{title} ({data.get('releaseYears')})"
 
-        base_metadata["metadata_title"] = data.get("title")
         base_metadata["metadata_link"] = data.get("link")
         base_metadata["metadata_mediatype"] = data.get("type")
         base_metadata["metadata_image"] = data.get("image")
