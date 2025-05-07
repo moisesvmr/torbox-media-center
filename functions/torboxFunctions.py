@@ -24,22 +24,38 @@ ACCEPTABLE_MIME_TYPES = [
 ]
 
 def getUserDownloads(type: DownloadType):
-    params = {
-        "limit": 10000,
-        "bypass_cache": False,
-    }
-    response = api_http_client.get(f"/{type.value}/mylist", params=params)
 
-    if response.status_code != 200:
-        return None, False, f"Error fetching {type.value}. {response.status_code}"
+    offset = 0
+    limit = 1000
 
-    data = response.json().get("data", [])
-    if not data:
+    file_data = []
+    
+    while True:
+        params = {
+            "limit": limit,
+            "offset": offset,
+            "bypass_cache": True,
+        }
+        response = api_http_client.get(f"/{type.value}/mylist", params=params)
+        if response.status_code != 200:
+            return None, False, f"Error fetching {type.value}. {response.status_code}"
+        
+        data = response.json().get("data", [])
+        if not data:
+            break
+        file_data.extend(data)
+        offset += limit
+        if len(data) < limit:
+            break
+
+    if not file_data:
         return None, True, f"No {type.value} found."
+    
+    logging.debug(f"Fetched {len(file_data)} {type.value} items from API.")
     
     files = []
     
-    for item in data:
+    for item in file_data:
         if not item.get("cached", False):
             continue
         for file in item.get("files", []):
