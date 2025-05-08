@@ -8,6 +8,7 @@ import sys
 import logging
 from functions.appFunctions import getAllUserDownloads
 import threading
+from sys import platform
 
 # Pull in some spaghetti to make this stuff work without fuse-py being installed
 try:
@@ -230,9 +231,10 @@ def runFuse():
         default=MOUNT_PATH,
         help="Mount point for the filesystem",
     )
-    server.fuse_args.add(
-        "nonempty"
-    )
+    if platform != "darwin":
+        server.fuse_args.add(
+            "nonempty"
+        )
     server.fuse_args.add(
         "allow_other"
     )
