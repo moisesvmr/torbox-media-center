@@ -36,10 +36,13 @@ def getUserDownloads(type: DownloadType):
             "offset": offset,
             "bypass_cache": True,
         }
-        response = api_http_client.get(f"/{type.value}/mylist", params=params)
+        try:
+            response = api_http_client.get(f"/{type.value}/mylist", params=params)
+        except Exception as e:
+            logging.error(f"Error fetching {type.value}: {e}")
+            return None, False, f"Error fetching {type.value}: {e}"
         if response.status_code != 200:
             return None, False, f"Error fetching {type.value}. {response.status_code}"
-        
         data = response.json().get("data", [])
         if not data:
             break
@@ -102,7 +105,11 @@ def searchMetadata(query: str, title_data: dict, file_name: str, full_title: str
         "metadata_rootfoldername": title_data.get("title", None),
     }
     extension = os.path.splitext(file_name)[-1]
-    response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
+    try:
+        response = search_api_http_client.get(f"/meta/search/{full_title}", params={"type": "file"})
+    except Exception as e:
+        logging.error(f"Error searching metadata: {e}")
+        return base_metadata, False, f"Error searching metadata: {e}"
     if response.status_code != 200:
         logging.error(f"Error searching metadata: {response.status_code}")
         return base_metadata, False, f"Error searching metadata. {response.status_code}"
