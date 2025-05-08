@@ -1,3 +1,8 @@
+## Converting Commands to Docker Compose
+Since Docker compose isn't as popular as Docker run commands, we only supplied the most common one [here](https://github.com/TorBox-App/torbox-media-center/blob/main/docker-compose.yaml), but since there are so many different iterations of the Docker run command, you can convert any Docker run command to a Docker compose file using [Composerize](https://www.composerize.com/), which is a pretty neat tool.
+
+Simply paste in the Docker run command you need and it will accurately and instantly convert it to a Docker compose which you can then use in tools like [Portainer](https://www.portainer.io/), or create your own full compose file which includes Plex, Jellyfin, or Emby!
+
 ## Standard Docker Run Command (STRM)
 
 Below is a standard Docker run command if spawning from the command line. Keep in mind the volume mount paths. If you change these in the environment variable, make sure you change it in the volume mount path.
