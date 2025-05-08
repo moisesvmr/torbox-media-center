@@ -43,7 +43,7 @@ The TorBox Media Center allows you to easily mount your TorBox media in a no-fri
 
 ### 💻 Compatbility with OS
 
-Compatibility is limited to Linux/Unix/BSD based systems when using the `fuse` option due to requiring [FUSE](https://www.kernel.org/doc./html/next/filesystems/fuse.html). [MacOS is also supported](https://macfuse.github.io/) (but not Apple Silicon Macs).
+Compatibility is limited to Linux/Unix/BSD based systems when using the `fuse` option due to requiring [FUSE](https://www.kernel.org/doc./html/next/filesystems/fuse.html). [MacOS is also supported](https://macfuse.github.io/).
 
 The `strm` option is compatible with all systems.
 
