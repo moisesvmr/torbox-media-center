@@ -1,9 +1,7 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from functions.appFunctions import bootUp, getMountMethod, getAllUserDownloadsFresh
-from functions.filesystemFunctions import runFuse, unmountFuse, runStrm, unmountStrm
 import logging
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,6 +34,7 @@ if __name__ == "__main__":
     try:
         logging.info("Starting scheduler and mounting...")
         if mount_method == "strm":
+            from functions.stremFilesystemFunctions import runStrm
             runStrm()
             scheduler.add_job(
                 runStrm,
@@ -45,11 +44,14 @@ if __name__ == "__main__":
             )
             scheduler.start()
         elif mount_method == "fuse":
+            from functions.fuseFilesystemFunctions import runFuse
             scheduler.start()
             runFuse()
     except (KeyboardInterrupt, SystemExit):
         if mount_method == "fuse":
+            from functions.fuseFilesystemFunctions import unmountFuse
             unmountFuse()
         elif mount_method == "strm":
+            from functions.stremFilesystemFunctions import unmountStrm
             unmountStrm()
         pass

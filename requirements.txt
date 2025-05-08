@@ -3,4 +3,7 @@ tinydb
 httpx
 python-dotenv
 parse-torrent-title
-fuse-python
+# do not install on windows or macOS
+fuse-python; sys_platform != "win32" and sys_platform != "darwin"
+# for macOS
+git+https://github.com/libfuse/python-fuse#egg=master; sys_platform == "darwin"
