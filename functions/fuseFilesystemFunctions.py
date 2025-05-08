@@ -21,8 +21,6 @@ if not hasattr(fuse, '__version__'):
 
 fuse.fuse_python_api = (0, 2)
 
-
-
 class VirtualFileSystem:
     def __init__(self, files_list):
         self.files = files_list

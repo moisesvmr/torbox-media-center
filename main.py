@@ -2,6 +2,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
 from functions.appFunctions import bootUp, getMountMethod, getAllUserDownloadsFresh
 import logging
+from sys import platform
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,6 +18,9 @@ if __name__ == "__main__":
     if mount_method == "strm":
         scheduler = BlockingScheduler()
     elif mount_method == "fuse":
+        if platform == "win32":
+            logging.error("The FUSE mount method is not supported on Windows. Please use the STRM mount method or run this application on a Linux system.")
+            exit(1)
         scheduler = BackgroundScheduler()
     else:
         logging.error("Invalid mount method specified.")
