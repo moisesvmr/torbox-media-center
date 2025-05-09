@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.1.0](https://github.com/TorBox-App/torbox-media-center/compare/v1.0.0...v1.1.0) (2025-05-09)
+
+
+### Features
+
+* ability to change mount refresh time ([6c6692e](https://github.com/TorBox-App/torbox-media-center/commit/6c6692ed86e81becfccefb7f695835ba66a1a1be))
+* adds banner ([407081f](https://github.com/TorBox-App/torbox-media-center/commit/407081fdf085c91d46251a49faf2efe20c0a6c02))
+* adds docker support back for linux/arm/v8 and linux/arm/v7 ([8c6bf74](https://github.com/TorBox-App/torbox-media-center/commit/8c6bf74e1406cf8c1a6c70eebaec1c1b84836e2f))
+* builds for linux/arm64 and linux/arm/v8 ([8dd4719](https://github.com/TorBox-App/torbox-media-center/commit/8dd4719242d602d41bba63128e60126daeb3849c))
+* gets all user files by iteration ([57c2b32](https://github.com/TorBox-App/torbox-media-center/commit/57c2b32da462f7adf924254379b7763084148dfd))
+* support for windows and macos by splitting mounting methods and importing safely ([badc443](https://github.com/TorBox-App/torbox-media-center/commit/badc4438b5dd19dad7f2d275f7e6b6c8fa7dcdaf))
+* uses search by file with full file name for better accuracy ([5f046d1](https://github.com/TorBox-App/torbox-media-center/commit/5f046d166959c50f0d230a6ce544cab0a18f2e9d))
+
+
+### Bug Fixes
+
+* adds timeout handling ([29aaf7b](https://github.com/TorBox-App/torbox-media-center/commit/29aaf7b7a04cf65ce17b747e0ce9fb0122f5eca4))
+* cannot build on osx apple silicon ([d83aba0](https://github.com/TorBox-App/torbox-media-center/commit/d83aba0e1084a1107ad8560e057a4a54b154ba3a))
+* cleans titles with invalid characters and code optimizaitons, handling error ([2b2e49a](https://github.com/TorBox-App/torbox-media-center/commit/2b2e49a65e9e5881333bf80d21557e72bd19d48a))
+* cleans year to be single year only ([639d567](https://github.com/TorBox-App/torbox-media-center/commit/639d56775e14882c5a4f118de47d6e004682f365))
+* darwin doesn't use unsupported parameter Cannot build on Apple Silicon Mac [#4](https://github.com/TorBox-App/torbox-media-center/issues/4) ([c1fc966](https://github.com/TorBox-App/torbox-media-center/commit/c1fc9663da8b477e404e22fc0c104a5f99f6f43c))
+* falls back to short_name of item if no title, fixes Crashing with TypeError [#5](https://github.com/TorBox-App/torbox-media-center/issues/5) ([b13b372](https://github.com/TorBox-App/torbox-media-center/commit/b13b372daf5d504b9cb67c686676cf373486c933))
+* handles errors when generating strm files ([6c9698e](https://github.com/TorBox-App/torbox-media-center/commit/6c9698e84b499133561b1d779a355f3cbc60da5f))
+* handles when item name is the hash ([39af017](https://github.com/TorBox-App/torbox-media-center/commit/39af0177329a72d3377d55ab940bc348ee68c1a2))
+* proper egg when installing on mac resolves Cannot build on Apple Silicon Mac [#4](https://github.com/TorBox-App/torbox-media-center/issues/4) ([c8127d4](https://github.com/TorBox-App/torbox-media-center/commit/c8127d443e1e416a52da4c0ecc3e10bc007fdf95))
+* proper error when using fuse on Windows ([7669691](https://github.com/TorBox-App/torbox-media-center/commit/7669691776d0a54587b69a373d86291f113bfbf6))
+* removes meta_title which had no bearing ([8f74ff3](https://github.com/TorBox-App/torbox-media-center/commit/8f74ff3955fe14bdd41913fbab60c801d2c3bc6f))
+* uses a slim bookworm docker image ([1c83020](https://github.com/TorBox-App/torbox-media-center/commit/1c83020679eca0bcb92e6f906b4060e9691035e9))
+
 ## 1.0.0 (2025-05-06)
 
 
