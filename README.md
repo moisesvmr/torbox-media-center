@@ -90,6 +90,8 @@ To run this project you will need to add the following environment variables to 
 
 `MOUNT_PATH` The mounting path where all of your files will be accessible. If inside of Docker, this path needs to be accessible to other applications. If running locally without Docker, this path must be owned.
 
+`MOUNT_REFRESH_TIME` How fast you would like your mount to look for new files. Must be either `slow` for every 3 hours, `normal` for every 2 hours, `fast` for every 1 hour, or `instant` for every 6 minutes. The default is `fast` and is optional.
+
 ## 🐳 Running on Docker (recommended)
 
 1. Make sure you have Docker installed on your server/computer. You can find instructions on how to install Docker [here](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-22-04) *(you can change your distribution in the guide)*.

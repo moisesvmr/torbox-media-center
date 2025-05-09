@@ -1,5 +1,6 @@
 from functions.torboxFunctions import getUserDownloads, DownloadType
 from library.filesystem import MOUNT_METHOD, MOUNT_PATH
+from library.app import MOUNT_REFRESH_TIME
 from library.torbox import TORBOX_API_KEY
 from functions.databaseFunctions import getAllData, clearDatabase
 import logging
@@ -68,6 +69,7 @@ def bootUp():
     logging.info("Mount method: %s", MOUNT_METHOD)
     logging.info("Mount path: %s", MOUNT_PATH)
     logging.info("TorBox API Key: %s", TORBOX_API_KEY)
+    logging.info("Mount refresh time: %s %s", MOUNT_REFRESH_TIME, "hours")
     initializeFolders()
 
     return True
@@ -77,3 +79,6 @@ def getMountMethod():
 
 def getMountPath():
     return MOUNT_PATH
+
+def getMountRefreshTime():
+    return MOUNT_REFRESH_TIME

@@ -1,6 +1,6 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.schedulers.background import BackgroundScheduler
-from functions.appFunctions import bootUp, getMountMethod, getAllUserDownloadsFresh
+from functions.appFunctions import bootUp, getMountMethod, getAllUserDownloadsFresh, getMountRefreshTime
 import logging
 from sys import platform
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
     scheduler.add_job(
         getAllUserDownloadsFresh,
         "interval",
-        hours=3,
+        hours=getMountRefreshTime(),
         id="get_all_user_downloads_fresh",
     )
 
