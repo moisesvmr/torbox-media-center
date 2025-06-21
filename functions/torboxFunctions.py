@@ -18,10 +18,8 @@ class IDType(Enum):
     usenet = "usenet_id"
     webdl = "web_id"
 
-ACCEPTABLE_MIME_TYPES = [
-    "video/x-matroska",
-    "video/mp4",
-]
+# Ahora filtramos por extensiones populares de video
+ACCEPTABLE_EXTENSIONS = ('.mp4', '.mkv', '.avi')
 
 def getUserDownloads(type: DownloadType):
 
@@ -62,8 +60,9 @@ def getUserDownloads(type: DownloadType):
         if not item.get("cached", False):
             continue
         for file in item.get("files", []):
-            if not file.get("mimetype").startswith("video/") or file.get("mimetype") not in ACCEPTABLE_MIME_TYPES:
-                logging.debug(f"Skipping file {file.get('short_name')} with mimetype {file.get('mimetype')}")
+            # Cambia esta línea: checa por extensión en lugar de mimetype
+            if not file.get("short_name", "").lower().endswith(ACCEPTABLE_EXTENSIONS):
+                logging.debug(f"Skipping file {file.get('short_name')} with extension {os.path.splitext(file.get('short_name'))[-1]}")
                 continue
             data = {
                 "item_id": item.get("id"),
@@ -73,7 +72,7 @@ def getUserDownloads(type: DownloadType):
                 "file_id": file.get("id"),
                 "file_name": file.get("short_name"),
                 "file_size": file.get("size"),
-                "file_mimetype": file.get("mimetype"),
+                "file_mimetype": file.get("mimetype"),  # Puedes dejarlo o quitarlo ya que no filtras por él
                 "path": file.get("name"),
                 "download_link": f"https://api.torbox.app/v1/api/{type.value}/requestdl?token={TORBOX_API_KEY}&{IDType[type.value].value}={item.get('id')}&file_id={file.get('id')}&redirect=true",
                 "extension": os.path.splitext(file.get("short_name"))[-1],              
@@ -164,4 +163,3 @@ def downloadFile(url: str, size: int, offset: int = 0):
     else:
         logging.error(f"Error downloading file: {response.status_code}")
         raise Exception(f"Error downloading file: {response.status_code}")
-    
